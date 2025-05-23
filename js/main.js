@@ -6,29 +6,57 @@ let resetButton = document.querySelector(".ResetButton");
 let ScoringButtons = document.querySelectorAll(".ScoringButton");
 let PlayerDyingDisplay = document.querySelector("#playerDyingDisplay");
 let MonsterDyingDisplay = document.querySelector("#monsterDyingDisplay");
+let PlayerScore = document.querySelector("#playerScore");
+let MonsterScore = document.querySelector("#monsterScore");
+let GameLog = document.querySelector(".GameLog");
+let AttackButton = document.querySelector("#attackButton");
+let HealButton = document.querySelector("#healButton");
+let SpecialAttackButton = document.querySelector("#specialAttackButton");
+let GiveUpButton = document.querySelector("#giveUpButton");
 
-
+let Player = document.querySelector("#player");
+let Monster = document.querySelector("#monster");
+let Damage;
 let scorePlayer = 0;
 let scoreMonster = 0;
 let maxScore = 100;
+let playerHealth = 100;
+let monsterHealth = 100;
 let Death = 0;
+let HealingNumber = 10
 
 let gameEnded = false;
 
+function startGame() {
+    playerHealth = maxScore;
+    monsterHealth = maxScore;
+    gameEnded = false;
+    updateHealthBars();
+    showButtons();
+    clearGameLog();
+    removeWinnerDisplay();
+    logMessage("Nouveau combat commencé !", "playerHealLog");
+}
 
+document.addEventListener("DOMContentLoaded", function() {
+   
+AttackButton.addEventListener("click", RegularAttack());
+SpecialAttackButton.addEventListener("click", SpecialAttack());
+HealButton.addEventListener("click", Heal());
+resetButton.addEventListener("click", GiveUp());
 
-function ShowScore(){
-    PlayerDyingDisplay.innerText = scorePlayer;
-    MonsterDyingDisplay.innerText = scoreMonster;
-};
+});
 
-function StartGame();
 
 function RegularAttack(){
     if(!gameEnded){
         const minRegularAttackNumber = 3;
         const maxMonsterAttackNumber = 10
-        return Math.floor(Math.random() * ((minRegularAttackNumber - maxMonsterAttackNumber + 1)) + minRegularAttackNumber);
+        Damage = Math.floor(Math.random() * ((minRegularAttackNumber - maxMonsterAttackNumber + 1)) + minRegularAttackNumber);
+        Damage.classList.add("regularAttack");
+        Damage.name = "Regular Attack";
+        MonsterDying(Damage);
+        LogGame();
 
     }
 };
@@ -36,62 +64,112 @@ function RegularAttack(){
 function SpecialAttack(){
     const minSpecialAttackNumber = 10;
     const maxSpecialAttackNumber = 20;
-    return Math.floor(Math.random() * ((minSpecialAttackNumber - maxSpecialAttackNumber + 1)) + minSpecialAttackNumber);
-
+    Damage = Math.floor(Math.random() * ((minSpecialAttackNumber - maxSpecialAttackNumber + 1)) + minSpecialAttackNumber);
+    Damage.classList.add("specialAttack");
+    Damage.name = "Special Attack";
+    MonsterDying(Damage);
+        LogGame();
+        
 };
 
 function Heal(){
-    return HealingNumber = 10;
+    Damage = HealingNumber;
+     LogGame();
 };
 
 function EnemyAttack(){
     if(!gameEnded){
   const minMonsterAttackNumber = 5;
   const maxMonsterAttackNumber = 10;
-  return Math.floor(Math.random() * ((minMonsterAttackNumber - maxMonsterAttackNumber + 1)) + minMonsterAttackNumber);    
+  MonsterDamage = Math.floor(Math.random() * ((minMonsterAttackNumber - maxMonsterAttackNumber + 1)) + minMonsterAttackNumber);   
+logMessage(`Monster attacks player for ${MonsterDamage} points`);
+updateHealthBars();
+
     }
 };
 
-function ShowScore();
+function ShowScore(){
+    PlayerDyingDisplay.innerText = `${ maxScore - scorePlayer}`;
+    MonsterDyingDisplay.innerText = `${ maxScore - scoreMonster}`;
+};
 
-function AndTheWinnerIs(){
-    if ((scorePlayer === 0) ||GiveUp ){ // GiveUp à revoir
+function updateHealthBars() {
+  if (gameEnded)  {
+    let playerIsThisCloseToDeath = (playerHealth / maxScore) * 100;
+    let monsterIsThisCloseToDeath = (monsterHealth / maxScore) * 100;
+
+    
+    PlayerDyingDisplay.style.width = playerHealth + "%";
+    PlayerDyingDisplay.innerText = playerHealth + "%";
+  } else if (playerHealth <= 0) {
         gameEnded = true;
-        let winner = document.createElement("div");
-        winner.classList.add("winner");
-        winner.textContent = "Monster wins!/You lose!";  
-        document.body.appendChild(winner); 
-             HideButtons();     
-    } else if (scoreMonster === 0){
+        GiveUp();
+
+      }
+}
+function MonsterDying(){
+    if (gameEnded)  {
+        Damage = EnemyAttack();
+    monsterHealth = maxScore - Damage;
+    MonsterDyingDisplay.style.width = playerHealth + "%";
+    MonsterDyingDisplay.innerText = playerHealth + "%";
+  } else if (playerHealth <= 0) {
         gameEnded = true;
-        let winner = document.createElement("div");
-        winner.classList.add("winner");
-        winner.textContent = "Player wins!/You win!";  
-        document.body.appendChild(winner); 
-             HideButtons();     
+        GiveUp();
+
+      }
     }
 
-} 
 
+function AndTheWinnerIs(message){
+        let winner = document.createElement("div");
+        winner.classList.add("winner");
+        winner.textContent = message  
+        document.body.appendChild(winner); 
+    }
+
+
+function EndGame(){
+    if (playerHealth <= 0 || GiveUp) {
+        gameEnded = true;
+        AndTheWinnerIs("Monster wins!/You lose!");
+       
+    } else if (monsterHealth <= 0) {
+        gameEnded = true;
+        AndTheWinnerIs("Player wins!/You win!");
+        
+    }
+}
 
 function GiveUp(){
-    scorePlayer = 100;
-    scoreMonster = 100;
+    AndTheWinnerIs();
+    PlayerDyingDisplay.style.width = maxScore;
+    MonsterDyingDisplay.style.width = maxScore;
     gameEnded = false;
 
     StartGame();
 };
 
-function HideButtons() {
-    ScoringButtons.forEach(button => {
-        button.style.display = "none";
-    });
-}
 
-function ShowButtons() {
-    ScoringButtons.forEach(button => {
-      button.style.display = "block";
-    });
-}
+function LogGame(){
 
-function LogGame();
+if (Damage === RegularAttack() || Damage === SpecialAttack()){
+    let PlayerAttackLog= document.createElement("li");
+    PlayerAttackLog.innerText = `${Player} scored a ${Damage.name} for ${Damage} points`;
+    PlayerAttackLog.classList.add("playerAttackLog");
+    GameLog.appendChild(PlayerAttackLog);
+
+
+} else if (Damage === EnemyAttack()){
+    let MonsterAttackLog= document.createElement("li");
+    MonsterAttackLog.innerText = `${Monster} scored a ${Damage.name} for ${Damage} points`;
+    MonsterAttackLog.classList.add("monsterAttackLog");
+    GameLog.appendChild(MonsterAttackLog);
+
+} else if (Damage === Heal()){
+    let PlayerHealLog= document.createElement("li");
+    PlayerHealLog.innerText = `${Player} healed themselves for ${HealingNumber} points`;
+    PlayerHealLog.classList.add("playerHealLog");
+    GameLog.appendChild(PlayerHealLog);
+}
+}

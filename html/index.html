@@ -3,41 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/sass/main.css"> 
     <title>Monster Slayer</title>
+
 </head>
 <body>
     <header>
         <h1> The real fight starts </h1>
         </header>
         <section class="gameContainer">
-          
-            
-            <div class="maxScoreContainer">
-                <label for="maxScore"></label>
-            </div>
 
-           <article class="ScoreDisplay">
-            <div>
-            <h2>Player</h2>
-             <span id="playerScore">0</span>
-             <progress id="playerDyingDisplay" max="100" value="AreTheyDeadYet" progress></progress>
-            </div>
+<article class="ScoreDisplay">
 
-            <div>
-            <h2>Monster</h2>
-             <progress id="monsterDyingDisplay" max="100" value="AreTheyDeadYet" progress></progress>
-             <span id="monsterScore">0</span>
-            </div>
-            </article>
-    
+    <section class = PlayerLifeBar>
+        <h2 id="player">Player</h2>        
+        <div class="LifeBar" id="playerScore">
+            <div  class="Progress" id="playerDyingDisplay"></div>
+        </div>
+    </section>
+
+    <section class="ScoreDisplay" class = MonsterLifeBar>
+        <h2 id="monster">Monster</h2>     
+        <div class="LifeBar" id="playerScore">
+            <div  class="Progress" id="monsterDyingDisplay"></div>
+        </div>    
+    </section> 
+
+</article>
             <form class="playerSection">
                   <button id="AttackButton" class="ScoringButton" type="button">Attack</button>
                   <button id="SpecialAttackButton" class="ScoringButton" type="button">Special Attack</button>
                   <button id="Heal" class="ScoringButton" type="button">Heal</button>   
-                  <button class="ResetButton" class="NewGame" type="button">Give up</button>
+                  <button class="ResetButton" id="NewGAme" type="button">Give up</button>
             </form>
         
-    </section>
+         </section>
+    <footer class="GameLog">
+        <h3>Game Log</h3> 
+    </footer>
     
     <script src="/js/main.js"> </script>
     
