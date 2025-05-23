@@ -15,10 +15,20 @@
             <div class="maxScoreContainer">
                 <label for="maxScore"></label>
             </div>
-            <div class="ScoreDisplay">
-                <!--- barre de vie-->
-                <span id="player1Score">0</span> - <span id="player2Score">0</span>
+
+           <article class="ScoreDisplay">
+            <div>
+            <h2>Player</h2>
+             <span id="playerScore">0</span>
+             <progress id="playerDyingDisplay" max="100" value="AreTheyDeadYet" progress></progress>
             </div>
+
+            <div>
+            <h2>Monster</h2>
+             <progress id="monsterDyingDisplay" max="100" value="AreTheyDeadYet" progress></progress>
+             <span id="monsterScore">0</span>
+            </div>
+            </article>
     
             <form class="playerSection">
                   <button id="AttackButton" class="ScoringButton" type="button">Attack</button>
